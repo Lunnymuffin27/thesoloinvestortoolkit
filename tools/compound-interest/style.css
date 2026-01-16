@@ -32,11 +32,13 @@ body {
   border-right: 1px solid var(--border);
   background: linear-gradient(180deg, var(--panel) 0%, rgba(15, 22, 41, 0.6) 100%);
   padding: 22px 18px;
-  position: sticky;
-  top: 0;
-  height: 100vh;
-  overflow: auto;
+
+  position: relative;  /* was sticky */
+  top: auto;
+  height: auto;        /* was 100vh */
+  overflow: visible;   /* was auto */
 }
+
 
 .brand h1 {
   margin: 0 0 6px;
