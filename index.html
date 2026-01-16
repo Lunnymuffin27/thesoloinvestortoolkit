@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Compound Interest Calculator</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="dashboard">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="brand">
+        <h1>Compound Calculator</h1>
+        <p>Contributions + compounding, visualized.</p>
+      </div>
+
+      <section class="panel">
+        <h2 class="panelTitle">Inputs</h2>
+
+        <div class="grid">
+          <label class="field">
+            <span>Initial Investment ($)</span>
+            <input type="number" id="principal" value="1000" min="0" step="100" />
+          </label>
+
+          <label class="field">
+            <span>Monthly Contribution ($)</span>
+            <input type="number" id="monthly" value="200" min="0" step="50" />
+          </label>
+
+          <label class="field">
+            <span>Annual Interest Rate (%)</span>
+            <input type="number" id="rate" value="7" min="0" step="0.1" />
+          </label>
+
+          <label class="field">
+            <span>Years</span>
+            <input type="number" id="years" value="20" min="0" step="1" />
+          </label>
+        </div>
+
+        <div class="toggle">
+          <p class="toggleTitle">Contribution Timing</p>
+
+          <label class="radio">
+            <input type="radio" name="timing" value="begin" checked />
+            <span>Beginning of month</span>
+          </label>
+
+          <label class="radio">
+            <input type="radio" name="timing" value="end" />
+            <span>End of month</span>
+          </label>
+
+          <p id="timingNote" class="note"></p>
+
+          <label class="check">
+            <input type="checkbox" id="compareMode" />
+            <span>Compare Begin vs End</span>
+          </label>
+        </div>
+
+        <div class="actions">
+          <button class="btn primary" type="button" id="calcBtn">Calculate</button>
+          <button class="btn" type="button" id="csvBtn">Download CSV</button>
+        </div>
+      </section>
+
+      <footer class="footer">
+        <p>Tip: try $500/mo for 30 years at 7%.</p>
+      </footer>
+    </aside>
+
+    <!-- Main Content -->
+    <section class="content">
+      <header class="contentHeader">
+        <h2>Results</h2>
+        <p>Hover the chart to see each year’s values.</p>
+      </header>
+
+      <section class="card resultsCard">
+        <div id="result" class="results"></div>
+      </section>
+
+      <section class="card chartCard">
+        <div class="chartHeader">
+          <h3>Growth Chart</h3>
+          <span class="muted">Balance & invested over time</span>
+        </div>
+
+        <div class="chartWrap">
+          <canvas id="chart" width="800" height="350"></canvas>
+          <div id="chartTooltip" class="chartTooltip" style="display:none;"></div>
+        </div>
+      </section>
+
+      <section class="card tableCard">
+        <div class="tableHeader">
+          <h3>Year-by-Year Breakdown</h3>
+          <span class="muted">Download CSV anytime</span>
+        </div>
+
+        <div id="table"></div>
+      </section>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
