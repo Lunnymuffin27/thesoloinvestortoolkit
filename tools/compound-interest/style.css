@@ -23,12 +23,11 @@ body {
   padding: 12px; /* helps inside iframe so it’s not edge-to-edge */
 }
 
-
 /* Layout */
 .dashboard {
   display: grid;
   grid-template-columns: 360px 1fr;
-  min-height: auto; /* was 100vh */
+  min-height: 100vh; /* was auto */
 }
 
 
@@ -37,13 +36,11 @@ body {
   border-right: 1px solid var(--border);
   background: linear-gradient(180deg, var(--panel) 0%, rgba(15, 22, 41, 0.6) 100%);
   padding: 22px 18px;
-
-  position: relative;  /* was sticky */
-  top: auto;
-  height: auto;        /* was 100vh */
-  overflow: visible;   /* was auto */
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: auto;
 }
-
 
 .brand h1 {
   margin: 0 0 6px;
@@ -281,6 +278,25 @@ th {
   background: transparent;
 }
 
+/* Embedded mode: remove the “app page” feel inside an iframe */
+body.is-embedded .dashboard {
+  min-height: auto;
+}
+
+body.is-embedded .sidebar {
+  position: relative;
+  top: auto;
+  height: auto;
+  overflow: visible;
+}
+
+body.is-embedded body,
+body.is-embedded .content {
+  padding-top: 0;
+}
+body.is-embedded {
+  padding: 12px;
+}
 
 /* Responsive */
 @media (max-width: 900px) {
