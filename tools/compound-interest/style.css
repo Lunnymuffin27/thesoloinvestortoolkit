@@ -253,6 +253,27 @@ th {
   color: var(--text);
 }
 
+.tableScroll {
+  max-height: 420px;          /* adjust if you want more/less visible rows */
+  overflow-y: auto;
+  border-radius: 14px;
+}
+
+/* Optional: subtle scrollbar styling (works in most browsers) */
+.tableScroll::-webkit-scrollbar {
+  width: 8px;
+}
+
+.tableScroll::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.25);
+  border-radius: 8px;
+}
+
+.tableScroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+
 /* Responsive */
 @media (max-width: 900px) {
   .dashboard {
