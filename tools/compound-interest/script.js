@@ -1,3 +1,15 @@
+
+// =============================
+// Detect if running inside an iframe (embed mode)
+try {
+  if (window.self !== window.top) {
+    document.body.classList.add("is-embedded");
+  }
+} catch (e) {
+  // If cross-origin blocks access, assume embedded
+  document.body.classList.add("is-embedded");
+}
+
 // =============================
 // Compound Interest Calculator
 // (Table + Chart + Tooltip + CSV)
