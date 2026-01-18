@@ -69,6 +69,41 @@ body {
   color: var(--text);
 }
 
+.presets {
+  margin-bottom: 14px;
+}
+
+.presetGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+.presetBtn {
+  text-align: left;
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,0.06);
+  color: var(--text);
+  padding: 10px 12px;
+  border-radius: 14px;
+  cursor: pointer;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.presetBtn span {
+  display: block;
+  margin-top: 6px;
+  font-weight: 600;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.presetBtn:hover {
+  filter: brightness(1.05);
+}
+
+
 /* Inputs */
 .grid {
   display: grid;
@@ -308,4 +343,3 @@ body.is-embedded {
     height: auto;
   }
 }
-
