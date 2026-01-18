@@ -30,6 +30,14 @@ const CHART_COLORS = {
   bg: "#FFFFFF"
 };
 
+const MILESTONES = [
+  { value: 100_000, label: "$100k" },
+  { value: 250_000, label: "$250k" },
+  { value: 500_000, label: "$500k" },
+  { value: 1_000_000, label: "$1M" },
+];
+
+
 let HOVER_INDEX = null; // which year index is hovered (for crosshair + dots)
 
 
@@ -81,6 +89,67 @@ function getInputs() {
     years: Number(document.getElementById("years").value || 0),
   };
 }
+
+function setInputs({ P, PMT, rate, years }) {
+  document.getElementById("principal").value = P;
+  document.getElementById("monthly").value = PMT;
+  document.getElementById("rate").value = rate;
+  document.getElementById("years").value = years;
+}
+
+function bindPresets() {
+  document.querySelectorAll(".presetBtn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const P = Number(btn.dataset.p);
+      const PMT = Number(btn.dataset.pmt);
+      const rate = Number(btn.dataset.rate);
+      const years = Number(btn.dataset.years);
+
+      setInputs({ P, PMT, rate, years });
+      updateTimingNote();
+      calculate();
+    });
+  });
+}
+
+//-------- Milestone Helper --------
+function computeMilestones(rows) {
+  const thresholds = [100000, 250000, 500000, 1000000];
+
+  const hits = thresholds
+    .map((t) => {
+      const r = rows.find((x) => x.endBalance >= t);
+      return r ? { label: `${formatMoney(t)} reached`, year: r.year } : null;
+    })
+    .filter(Boolean);
+
+  const snowball = rows.find((r) => r.yearInterest >= r.yearContrib);
+  const snowballHit = snowball
+    ? { label: "Snowball moment (annual interest ≥ annual contributions)", year: snowball.year }
+    : null;
+
+  return { hits, snowballHit };
+}
+
+//-------- Milestone Detect on chart --------
+function findChartMilestones(series) {
+  // We label milestones based on the primary balance series (not invested)
+  const balanceSeries = series.find(s => s.name.includes("Balance"));
+  if (!balanceSeries) return [];
+
+  return MILESTONES.map((m) => {
+    const idx = balanceSeries.values.findIndex(v => v.value >= m.value);
+    if (idx === -1) return null;
+
+    return {
+      index: idx,
+      year: balanceSeries.values[idx].year,
+      value: m.value,
+      label: m.label,
+    };
+  }).filter(Boolean);
+}
+
 
 // ---------- Core Calculation (Simulation) ----------
 function runScenario({ P, PMT, rAnnual, years, timing }) {
@@ -143,16 +212,41 @@ function runScenario({ P, PMT, rAnnual, years, timing }) {
 }
 
 // ---------- Rendering: Results + Table ----------
-function renderResults({ total, invested, interest }) {
+function renderResults({ total, invested, interest, rows }) {
   const resultEl = document.getElementById("result");
   if (!resultEl) return;
 
+  const { hits, snowballHit } = computeMilestones(rows);
+
+  const milestoneItems = [
+    ...hits.map((m) => `<li><strong>${m.label}</strong>: Year ${m.year}</li>`),
+    snowballHit ? `<li><strong>${snowballHit.label}</strong>: Year ${snowballHit.year}</li>` : "",
+  ].filter(Boolean).join("");
+
   resultEl.innerHTML = `
-    <strong>Final Balance:</strong> ${formatMoney(total)}<br>
-    <strong>Total Invested:</strong> ${formatMoney(invested)}<br>
-    <strong>Total Interest:</strong> ${formatMoney(interest)}
+    <div style="display:grid;gap:10px;">
+      <div>
+        <strong>Final Balance:</strong> ${formatMoney(total)}<br>
+        <strong>Total Invested:</strong> ${formatMoney(invested)}<br>
+        <strong>Total Interest:</strong> ${formatMoney(interest)}
+      </div>
+
+      <div style="border-top:1px solid rgba(255,255,255,0.12); padding-top:10px;">
+        <strong>Milestones</strong>
+        ${
+          milestoneItems
+            ? `<ul style="margin:8px 0 0; padding-left:18px; color: rgba(255,255,255,0.86);">
+                 ${milestoneItems}
+               </ul>`
+            : `<div style="margin-top:8px; color: rgba(255,255,255,0.68);">
+                 Increase years/rate/contributions to reach milestones.
+               </div>`
+        }
+      </div>
+    </div>
   `;
 }
+
 
 function renderTable(rows) {
   const tableEl = document.getElementById("table");
@@ -390,6 +484,48 @@ function renderMultiLineChart({ titleLeft, series }) {
     lx += 14 + ctx.measureText(s.name).width + 18;
   });
 
+    // ---- Milestone markers ----
+    const milestones = findChartMilestones(series);
+
+    milestones.forEach((m) => {
+      const x = pad.left + (m.index / (pointsCount - 1)) * w;
+      const y = pad.top + (1 - m.value / maxVal) * h;
+  
+      // Vertical dashed line
+      ctx.strokeStyle = "rgba(37, 99, 235, 0.35)"; // blue, subtle
+      ctx.setLineDash([4, 4]);
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(x, pad.top);
+      ctx.lineTo(x, pad.top + h);
+      ctx.stroke();
+      ctx.setLineDash([]);
+  
+      // Marker dot
+      ctx.beginPath();
+      ctx.fillStyle = "#2563EB";
+      ctx.arc(x, y, 4, 0, Math.PI * 2);
+      ctx.fill();
+  
+      // Label background
+      const labelText = `${m.label} • Yr ${m.year}`;
+      ctx.font = "11px Arial";
+      const textWidth = ctx.measureText(labelText).width;
+  
+      const labelX = Math.min(x + 6, pad.left + w - textWidth - 6);
+      const labelY = Math.max(y - 14, pad.top + 12);
+  
+      ctx.fillStyle = "rgba(255,255,255,0.95)";
+      ctx.fillRect(labelX - 4, labelY - 12, textWidth + 8, 16);
+  
+      // Label text
+      ctx.fillStyle = "#111827";
+      ctx.textAlign = "left";
+      ctx.textBaseline = "middle";
+      ctx.fillText(labelText, labelX, labelY - 4);
+    });
+  
+
   // Save for hover
   CHART_STATE = { titleLeft, pad, w, h, pointsCount, series, maxVal };
   installChartHover();
@@ -544,7 +680,7 @@ function calculate() {
   LAST_ROWS = primary.rows;
 
   // Render
-  renderResults(primary);
+  renderResults({ ...primary, rows: primary.rows });
   renderTable(primary.rows);
 
   if (!compareMode) {
@@ -566,6 +702,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Note + initial calc
   updateTimingNote();
   calculate();
+  bindPresets();
 
   // Inputs auto recalc
   ["principal", "monthly", "rate", "years"].forEach((id) => {
@@ -590,3 +727,40 @@ document.addEventListener("DOMContentLoaded", () => {
   if (csvBtn) csvBtn.addEventListener("click", downloadCSV);
 });
 
+//-------- Milestone Helper --------
+function computeMilestones(rows) {
+  const thresholds = [100000, 250000, 500000, 1000000];
+
+  const hits = thresholds
+    .map((t) => {
+      const r = rows.find((x) => x.endBalance >= t);
+      return r ? { label: `${formatMoney(t)} reached`, year: r.year } : null;
+    })
+    .filter(Boolean);
+
+  const snowball = rows.find((r) => r.yearInterest >= r.yearContrib);
+  const snowballHit = snowball
+    ? { label: "Snowball moment (annual interest ≥ annual contributions)", year: snowball.year }
+    : null;
+
+  return { hits, snowballHit };
+}
+
+//-------- Milestone Detect on chart --------
+function findChartMilestones(series) {
+  // We label milestones based on the primary balance series (not invested)
+  const balanceSeries = series.find(s => s.name.includes("Balance"));
+  if (!balanceSeries) return [];
+
+  return MILESTONES.map((m) => {
+    const idx = balanceSeries.values.findIndex(v => v.value >= m.value);
+    if (idx === -1) return null;
+
+    return {
+      index: idx,
+      year: balanceSeries.values[idx].year,
+      value: m.value,
+      label: m.label,
+    };
+  }).filter(Boolean);
+}
