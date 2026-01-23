@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Net Worth Tracker</title>
+    <link rel="stylesheet" href="/style.css" />
+    <!-- Chart.js (CDN) -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+  <body>
+    <header class="container">
+      <h1>Net Worth Tracker</h1>
+      <h5>By The Solo Investor</h5>
+      <p class="sub">Track assets, liabilities, and net worth over time (saved locally).</p>
+    </header>
+
+    <main class="container grid">
+      <section class="card">
+        <div class="cardHeader">
+          <h2>Assets</h2>
+          <button id="addAssetBtn" class="btn">+ Add Asset</button>
+        </div>
+        <div id="assetsList" class="list"></div>
+        <div id="assetBreakdown" class="breakdown"></div>
+        <div class="totalsRow">
+          <span>Total Assets</span>
+          <strong id="totalAssets">$0</strong>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="cardHeader">
+          <h2>Liabilities</h2>
+          <button id="addLiabilityBtn" class="btn">+ Add Liability</button>
+        </div>
+        <div id="liabilitiesList" class="list"></div>
+        <div id="liabilityBreakdown" class="breakdown"></div>
+        <div class="totalsRow">
+          <span>Total Liabilities</span>
+          <strong id="totalLiabilities">$0</strong>
+        </div>
+      </section>
+
+      <section class="card summary">
+        <h2>Summary</h2>
+        <div class="summaryGrid">
+          <div class="summaryBox">
+            <span>Assets</span>
+            <strong id="sumAssets">$0</strong>
+          </div>
+          <div class="summaryBox">
+            <span>Liabilities</span>
+            <strong id="sumLiabilities">$0</strong>
+          </div>
+          <div class="summaryBox networth">
+            <span>Net Worth</span>
+            <strong id="netWorth">$0</strong>
+          </div>
+        </div>
+        <div class="dateBar">
+          <div class="dateField">
+            <label for="snapshotDate">Snapshot Date</label>
+            <input id="snapshotDate" type="date" />
+          </div>
+          <button id="useTodayBtn" class="btn small">Use Today</button>
+        </div>        
+
+        <div class="actions">
+          <button id="saveSnapshotBtn" class="btn primary">Save Snapshot</button>
+          <button id="exportCsvBtn" class="btn">Export CSV</button>
+          <button id="resetBtn" class="btn danger">Reset All</button>
+        </div>
+
+        <h3 class="mt">Net Worth Over Time</h3>
+        <div class="chartWrap">
+          <canvas id="netWorthChart"></canvas>
+        </div>
+        
+
+        <div class="snapshotsHeader">
+          <h3>Snapshots</h3>
+          <button id="clearSnapshotsBtn" class="btn small">Clear Snapshots</button>
+        </div>
+        <div id="snapshotsList" class="snapshots"></div>
+      </section>
+    </main>
+
+    <footer class="container footer">
+      <small>Data is stored in your browser (localStorage). No accounts, no uploads.</small>
+    </footer>
+
+    <script src="app.js"></script>
+  </body>
+</html>
