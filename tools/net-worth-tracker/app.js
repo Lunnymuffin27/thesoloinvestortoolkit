@@ -6,6 +6,9 @@
    - Snapshots + Chart.js (updates only on snapshot changes)
    ============================================================ */
 
+   console.log("✅ Net Worth Tracker app.js loaded");
+
+
    const STORAGE_KEY = "solo_investor_networth_v2";
 
    const ASSET_CATEGORIES = ["Cash", "Investments", "Retirement", "Real Estate", "Business", "Other"];
