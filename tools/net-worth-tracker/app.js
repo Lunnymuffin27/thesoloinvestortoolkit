@@ -6,9 +6,6 @@
    - Snapshots + Chart.js (updates only on snapshot changes)
    ============================================================ */
 
-   console.log("✅ Net Worth Tracker app.js loaded");
-
-
    const STORAGE_KEY = "solo_investor_networth_v2";
 
    const ASSET_CATEGORIES = ["Cash", "Investments", "Retirement", "Real Estate", "Business", "Other"];
@@ -34,6 +31,7 @@
 
      snapshotDate: $("snapshotDate"),
      useTodayBtn: $("useTodayBtn"),
+     snapshotNote: $("snapshotNote"),
    
      saveSnapshotBtn: $("saveSnapshotBtn"),
      exportCsvBtn: $("exportCsvBtn"),
@@ -42,6 +40,7 @@
      snapshotsList: $("snapshotsList"),
    
      chartCanvas: $("netWorthChart"),
+     netWorthDelta: $("netWorthDelta"),
    };
    
    /* -------------------- Utils -------------------- */
@@ -125,6 +124,7 @@
          assetsTotal: toNumber(s.assetsTotal),
          liabilitiesTotal: toNumber(s.liabilitiesTotal),
          netWorth: toNumber(s.netWorth),
+         ote: typeof s.note === "string" ? s.note : "",
        }))
        .sort((a, b) => String(a.date).localeCompare(String(b.date)));
    
@@ -255,6 +255,8 @@
      els.netWorth.textContent = formatCurrency(netWorth);
    
      els.netWorth.style.color = netWorth >= 0 ? "var(--good)" : "var(--bad)";
+     renderNetWorthDelta(netWorth);
+
    }
    
    function renderBreakdowns() {
@@ -283,6 +285,7 @@
    function upsertSnapshotForSelectedDate() {
       const date = getSnapshotDate();
       const { assetsTotal, liabilitiesTotal, netWorth } = totals();
+      const note = (els.snapshotNote?.value || "").trim();
     
       const existing = state.snapshots.find((s) => s.date === date);
       if (existing) {
@@ -292,8 +295,12 @@
       } else {
         state.snapshots.push({ id: uid(), date, assetsTotal, liabilitiesTotal, netWorth });
       }
+
+      if (els.snapshotNote) els.snapshotNote.value = "";
     
       state.snapshots.sort((a, b) => String(a.date).localeCompare(String(b.date)));
+      state.snapshots.push({ id: uid(), date, assetsTotal, liabilitiesTotal, netWorth, note });
+
       saveState();
       renderSnapshots();
       renderChart(); // chart updates only on snapshot changes
@@ -330,7 +337,8 @@
        item.className = "snapshotItem";
        item.title = "Click to delete this snapshot";
        item.style.cursor = "pointer";
-       item.innerHTML = `<span>${s.date}</span><strong>${formatCurrency(s.netWorth)}</strong>`;
+       const noteText = s.note ? ` — ${s.note}` : "";
+       item.innerHTML = `<span>${s.date}${noteText}</span><strong>${formatCurrency(s.netWorth)}</strong>`;
        item.addEventListener("click", () => deleteSnapshot(s.id));
        els.snapshotsList.appendChild(item);
      });
@@ -346,6 +354,41 @@
      Chart.defaults.font.family =
        "ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif";
    }
+
+   /*----- Render Networth Delta ------ */
+
+   function renderNetWorthDelta(currentNetWorth) {
+    if (!els.netWorthDelta) return;
+  
+    // Need at least 1 snapshot to compare
+    if (!state.snapshots || state.snapshots.length === 0) {
+      els.netWorthDelta.textContent = "Save a snapshot to track changes over time.";
+      els.netWorthDelta.className = "deltaText";
+      return;
+    }
+  
+    // Compare to the most recent snapshot (latest by date)
+    const last = state.snapshots[state.snapshots.length - 1];
+    const delta = currentNetWorth - toNumber(last.netWorth);
+  
+    // If last snapshot equals current (common when you just saved), find previous
+    let compareValue = toNumber(last.netWorth);
+    if (delta === 0 && state.snapshots.length >= 2) {
+      compareValue = toNumber(state.snapshots[state.snapshots.length - 2].netWorth);
+    }
+  
+    const realDelta = currentNetWorth - compareValue;
+  
+    if (realDelta === 0) {
+      els.netWorthDelta.textContent = "No change from last snapshot.";
+      els.netWorthDelta.className = "deltaText";
+      return;
+    }
+  
+    const up = realDelta > 0;
+    els.netWorthDelta.textContent = `${up ? "↑" : "↓"} ${formatCurrency(Math.abs(realDelta))} since last snapshot`;
+    els.netWorthDelta.className = `deltaText ${up ? "deltaUp" : "deltaDown"}`;
+  }  
    
    function renderChart() {
      if (!els.chartCanvas || !window.Chart) return;
@@ -414,7 +457,8 @@
      chart.data.datasets[0].data = data;
      chart.update("none"); // less animation / lower CPU
    }
-   
+
+   // ------CSV Export functions
    function csvEscape(value) {
     const s = String(value ?? "");
     // Escape quotes by doubling them. Wrap in quotes if needed.
@@ -462,9 +506,9 @@
     
       // Snapshots section
       lines.push(toCsvLine(["SNAPSHOTS"]));
-      lines.push(toCsvLine(["Date", "Assets Total", "Liabilities Total", "Net Worth"]));
+      lines.push(toCsvLine(["Date", "Assets Total", "Liabilities Total", "Net Worth", "Note"]));
       state.snapshots.forEach((s) => {
-        lines.push(toCsvLine([s.date, toNumber(s.assetsTotal), toNumber(s.liabilitiesTotal), toNumber(s.netWorth)]));
+        lines.push(toCsvLine([s.date, toNumber(s.assetsTotal), toNumber(s.liabilitiesTotal), toNumber(s.netWorth), s.note || ""]));
       });
     
       return lines.join("\n");
