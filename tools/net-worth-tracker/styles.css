@@ -253,6 +253,28 @@ input:focus{
   letter-spacing:.2px;
 }
 
+/*-- Snashot notes styles ---*/
+.noteBar{
+  margin: 8px 0 12px;
+  display: grid;
+  gap: 6px;
+}
+.noteBar label{
+  color: var(--muted2);
+  font-family: ui-serif, Georgia, "Times New Roman", Times, serif;
+  font-size: 14px;
+}
+.noteBar input{
+  width: 100%;
+  padding: 10px 11px;
+  border-radius: 12px;
+  border: 1px solid rgba(42,34,48,1);
+  background: rgba(12,11,18,.85);
+  color: var(--text);
+  outline: none;
+}
+
+
 /* action row */
 .actions{
   display:flex;
@@ -349,3 +371,11 @@ input:focus{
   color: var(--text);
   font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
 }
+
+.deltaText{
+  margin-top: 6px;
+  font-size: 13px;
+  color: var(--muted2);
+}
+.deltaUp{ color: var(--good); }
+.deltaDown{ color: var(--bad); }
