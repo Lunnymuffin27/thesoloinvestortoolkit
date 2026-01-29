@@ -4,7 +4,7 @@ A central hub that gives access to all Solo Investor financial tools from a sing
 Designed for simplicity, mobile use, and easy expansion.
 
 ## Live Demo
-👉 https://lunnymuffin27.github.io/soloinvestortoolkit/tool-hub/
+👉 https://lunnymuffin27.github.io/thesoloinvestortoolkit/tools-hub/
 
 ---
 
