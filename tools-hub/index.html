@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Solo Investor Tool Hub</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <!-- Top Bar -->
+  <header class="topbar">
+    <button class="menu-btn" id="openMenuBtn" aria-label="Open menu">Menu</button>
+    <div class="brand">
+      <div class="brand-title">Solo Investor Tools</div>
+      <div class="brand-sub">One hub. All tools.</div>
+    </div>
+  </header>
+
+  <!-- Drawer + Backdrop -->
+  <div class="backdrop" id="backdrop" hidden></div>
+
+  <aside class="drawer" id="drawer" aria-label="Tools menu" aria-hidden="true">
+    <div class="drawer-header">
+      <div>
+        <div class="drawer-title">Tool Hub</div>
+        <div class="drawer-sub">Pick a tool</div>
+      </div>
+      <button class="icon-btn" id="closeMenuBtn" aria-label="Close menu">✕</button>
+    </div>
+
+    <div class="drawer-controls">
+      <input id="toolSearch" type="search" placeholder="Search tools…" />
+    </div>
+
+    <nav id="toolList" class="tool-list">
+      <!-- JS renders tools here -->
+    </nav>
+
+    <div class="drawer-footer">
+      <a class="drawer-link" href="../" target="_blank" rel="noreferrer">Back to site</a>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="container">
+    <section class="card">
+      <div class="card-head">
+        <div>
+          <h1 id="toolTitle">Select a tool</h1>
+          <p id="toolDesc">Open the menu and choose a tool.</p>
+        </div>
+
+        <div class="actions">
+          <button class="btn" id="openNewTabBtn" disabled>Open in new tab</button>
+        </div>
+      </div>
+
+      <hr class="divider" />
+
+      <div class="viewer">
+        <iframe id="toolFrame" title="Tool Viewer" src="" loading="lazy"></iframe>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
