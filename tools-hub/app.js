@@ -11,7 +11,7 @@ const TOOLS = [
         id: "compound",
         name: "Compound Interest",
         desc: "Growth over time + export",
-        url: "../tools/compound-interest/index.html"
+        url: "../compound-interest/index.html"
       }
     ]
   },
@@ -22,7 +22,7 @@ const TOOLS = [
         id: "networth",
         name: "Net Worth Tracker",
         desc: "Assets & liabilities snapshot",
-        url: "../tools/net-worth/index.html"
+        url: "../net-worth-tracker/index.html"
       }
     ]
   }
