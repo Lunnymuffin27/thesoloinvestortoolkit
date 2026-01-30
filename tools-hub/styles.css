@@ -206,3 +206,13 @@ iframe{
   border: 0;
   background: #fff;
 }
+
+/* When a tool is active, reduce padding */
+body.tool-active .card-head{
+  padding-bottom: 8px;
+}
+
+body.tool-active .divider{
+  display: none;
+}
+
