@@ -1,13 +1,22 @@
-:root {
-  --bg: #0b0f1a;
-  --panel: #0f1629;
-  --card: #111a30;
-  --card2: #0f172a;
-  --text: rgba(255,255,255,0.92);
-  --muted: rgba(255,255,255,0.68);
-  --border: rgba(255,255,255,0.12);
-  --shadow: 0 16px 40px rgba(0,0,0,0.35);
-  --accent: #ffffff;
+:root{
+  /* Dark Academia / Solo Investor */
+  --bg0:#070609;            /* near-black */
+  --bg1:#0d0b10;            /* deep plum/ink */
+  --panel:#111018;          /* card base */
+  --panel2:#0c0b12;         /* inner fields */
+  --line:#2a2230;           /* dividers */
+  --line2:#3a3041;          /* hover dividers */
+  --text:#efe7d8;           /* parchment */
+  --muted:#c7bda8;          /* warm muted */
+  --muted2:#a99f8d;
+  --accent:#c7a25a;         /* brass */
+  --accent2:#9d7d3f;
+  --good:#7bd389;           /* soft green */
+  --bad:#ff6b6b;
+
+  --radius:18px;
+  --radius2:14px;
+  --shadow: 0 18px 45px rgba(0,0,0,.35);
 }
 
 * { box-sizing: border-box; }
