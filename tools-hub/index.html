@@ -46,25 +46,20 @@
   </aside>
 
   <!-- Main Content -->
-  <main class="container">
-    <section class="card">
-      <div class="card-head">
-        <div>
-          <h1 id="toolTitle">Select a tool</h1>
-          <p id="toolDesc">Open the menu and choose a tool.</p>
-        </div>
-
-        <div class="actions">
-          <button class="btn" id="openNewTabBtn" disabled>Open in new tab</button>
-        </div>
+  <main class="tool-shell">
+    <header class="tool-header">
+      <div>
+        <h1 id="toolTitle">Select a tool</h1>
+        <p id="toolDesc">Open the menu and choose a tool.</p>
       </div>
-
-      <hr class="divider" />
-
-      <div class="viewer">
-        <iframe id="toolFrame" title="Tool Viewer" src="" loading="lazy"></iframe>
+  
+      <div class="actions">
+        <button class="btn" id="openNewTabBtn" disabled>Open in new tab</button>
       </div>
-    </section>
+    </header>
+  
+    <iframe id="toolFrame" title="Tool Viewer" src="" loading="lazy"></iframe>
   </main>
+
 </body>
 </html>
