@@ -2,64 +2,90 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Solo Investor Tool Hub</title>
   <link rel="stylesheet" href="styles.css" />
   <script src="app.js" defer></script>
 </head>
 <body>
   <!-- Top Bar -->
-  <section class="tool-shell">
-    <header class="topbar">
-      <button class="menu-btn" id="openMenuBtn" aria-label="Open menu">Menu</button>
-      <div class="brand">
-        <div class="brand-title">Solo Investor Tools</div>
-        <div class="brand-sub">One hub. All tools.</div>
-      </div>
-    </header>
-    <iframe id="toolFrame"></iframe>
-  </section>
+  <header class="topbar">
+    <button class="icon-btn" id="openMenuBtn" aria-label="Open menu">
+      ☰
+    </button>
 
-  <!-- Drawer + Backdrop -->
+    <div class="brand">
+      <div class="brand-title">Solo Investor Tools</div>
+      <div class="brand-sub">All tools in one hub</div>
+    </div>
+
+    <div class="topbar-actions">
+      <button class="btn" id="openNewTabBtn" disabled>Open in new tab</button>
+    </div>
+  </header>
+
+  <!-- Desktop layout -->
+  <div class="layout">
+    <!-- Desktop Sidebar -->
+    <aside class="sidebar" aria-label="Tool navigation">
+      <div class="sidebar-head">
+        <div class="sidebar-title">Tools</div>
+        <div class="sidebar-sub">Search and select</div>
+      </div>
+
+      <div class="sidebar-controls">
+        <input id="toolSearchDesktop" type="search" placeholder="Search tools…" />
+      </div>
+
+      <nav id="toolListDesktop" class="tool-list"></nav>
+
+      <div class="sidebar-footer">
+        <a class="sidebar-link" href="../" target="_blank" rel="noreferrer">Back to site</a>
+      </div>
+    </aside>
+
+    <!-- Main Viewer -->
+    <main class="main">
+      <section class="tool-header">
+        <div class="tool-meta">
+          <h1 id="toolTitle">Select a tool</h1>
+          <p id="toolDesc">Pick a tool from the left panel.</p>
+        </div>
+      </section>
+
+      <section class="viewer" aria-label="Tool viewer">
+        <iframe
+          id="toolFrame"
+          title="Solo Investor tool"
+          src=""
+          loading="lazy"
+          referrerpolicy="no-referrer"
+        ></iframe>
+      </section>
+    </main>
+  </div>
+
+  <!-- Mobile Drawer -->
   <div class="backdrop" id="backdrop" hidden></div>
 
-  <aside class="drawer" id="drawer" aria-label="Tools menu" aria-hidden="true">
-    <div class="drawer-header">
+  <aside class="drawer" id="drawer" aria-label="Tool menu" aria-hidden="true">
+    <div class="drawer-head">
       <div>
-        <div class="drawer-title">Tool Hub</div>
-        <div class="drawer-sub">Pick a tool</div>
+        <div class="drawer-title">Tools</div>
+        <div class="drawer-sub">Search and select</div>
       </div>
       <button class="icon-btn" id="closeMenuBtn" aria-label="Close menu">✕</button>
     </div>
 
     <div class="drawer-controls">
-      <input id="toolSearch" type="search" placeholder="Search tools…" />
+      <input id="toolSearchMobile" type="search" placeholder="Search tools…" />
     </div>
 
-    <nav id="toolList" class="tool-list">
-      <!-- JS renders tools here -->
-    </nav>
+    <nav id="toolListMobile" class="tool-list"></nav>
 
     <div class="drawer-footer">
       <a class="drawer-link" href="../" target="_blank" rel="noreferrer">Back to site</a>
     </div>
   </aside>
-
-  <!-- Main Content -->
-  <main class="tool-shell">
-    <header class="tool-header">
-      <div>
-        <h1 id="toolTitle">Select a tool</h1>
-        <p id="toolDesc">Open the menu and choose a tool.</p>
-      </div>
-  
-      <div class="actions">
-        <button class="btn" id="openNewTabBtn" disabled>Open in new tab</button>
-      </div>
-    </header>
-  
-    <iframe id="toolFrame" title="Tool Viewer" src="" loading="lazy"></iframe>
-  </main>
-
 </body>
 </html>
