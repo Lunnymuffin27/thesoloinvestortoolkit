@@ -17,7 +17,7 @@ const TOOL_GROUPS = [
         id: "networth",
         name: "Net Worth Tracker",
         desc: "Assets & liabilities in one place",
-        url: "../tools/net-worth/index.html"
+        url: "../tools/net-worth-tracker/index.html"
       }
     ]
   }
