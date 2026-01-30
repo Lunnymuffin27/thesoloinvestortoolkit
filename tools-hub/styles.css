@@ -54,18 +54,38 @@ body{
 
 /* Optional tool-shell styles (safe if unused) */
 .tool-shell{
-  height: calc(100vh - 58px);
+  height: calc(100vh - 58px); /* subtract topbar height */
   display: flex;
   flex-direction: column;
+  padding: 14px;
+  gap: 10px;
 }
 
 .tool-header{
-  border-bottom: 1px solid var(--border);
-  padding: 12px;
-  background: rgba(255,255,255,0.02);
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+
+  padding: 14px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+
+  background:
+    radial-gradient(700px 420px at 12% 10%, rgba(199,162,90,0.08) 0%, transparent 55%),
+    linear-gradient(180deg, rgba(17,16,24,0.92) 0%, rgba(12,11,18,0.88) 100%);
+  box-shadow: var(--shadow);
 }
 
-.tool-shell iframe{ flex: 1; }
+.tool-shell iframe{
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: #fff;
+}
+
 
 /* Buttons in header */
 .menu-btn{
@@ -234,36 +254,11 @@ body{
   display: flex;
 }
 
-.card{
-  background:
-    radial-gradient(700px 420px at 12% 10%, rgba(199,162,90,0.08) 0%, transparent 55%),
-    linear-gradient(180deg, rgba(17,16,24,0.92) 0%, rgba(12,11,18,0.88) 100%);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  overflow: hidden;
 
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-}
-
-.card-head{
-  padding: 16px;
-  display:flex;
-  align-items:flex-start;
-  justify-content: space-between;
-  gap: 12px;
-}
 
 h1{ margin: 0; font-size: 18px; color: var(--text); }
 p{ margin: 6px 0 0; color: var(--muted); font-size: 13px; }
 
-.divider{
-  border: none;
-  border-top: 1px solid var(--border);
-  margin: 0;
-}
 
 .actions{ display:flex; gap: 10px; }
 
@@ -281,12 +276,8 @@ p{ margin: 6px 0 0; color: var(--muted); font-size: 13px; }
 }
 .btn:disabled{ opacity: .55; cursor: not-allowed; }
 
-/* Let tool fill the page */
-.viewer{
-  flex: 1;
-  min-height: 0;
-  background: rgba(255,255,255,0.02);
-}
+
+
 
 /* iframe */
 iframe{
