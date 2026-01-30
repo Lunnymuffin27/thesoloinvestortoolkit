@@ -30,6 +30,22 @@ body{
   border-bottom: 1px solid var(--border);
 }
 
+.tool-shell{
+  height: calc(100vh - 58px);
+  display: flex;
+  flex-direction: column;
+}
+
+.tool-header{
+  border-bottom: 1px solid var(--border);
+  padding: 12px;
+}
+
+.tool-shell iframe{
+  flex: 1;
+}
+
+
 .menu-btn{
   border: 1px solid var(--border);
   background: #fff;
