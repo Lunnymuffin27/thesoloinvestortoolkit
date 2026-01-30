@@ -11,7 +11,7 @@ const TOOLS = [
         id: "compound",
         name: "Compound Interest",
         desc: "Growth over time + export",
-        url: "../compound-interest/index.html"
+        url: "./compound-interest/index.html"
       }
     ]
   },
