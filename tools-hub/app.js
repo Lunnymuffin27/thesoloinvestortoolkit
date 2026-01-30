@@ -22,7 +22,7 @@ const TOOLS = [
         id: "networth",
         name: "Net Worth Tracker",
         desc: "Assets & liabilities snapshot",
-        url: "../net-worth-tracker/index.html"
+        url: "../tools/net-worth-tracker/index.html"
       }
     ]
   }
