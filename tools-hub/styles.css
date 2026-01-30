@@ -94,7 +94,7 @@ body{
 .backdrop{
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,.55);
+  /* background: rgba(0,0,0,.55); */
   z-index: 8;
 }
 
@@ -133,7 +133,7 @@ body{
 
 .icon-btn{
   border: 1px solid var(--border);
-  background: rgba(255,255,255,0.04);
+  /* background: rgba(255,255,255,0.04); */
   color: var(--text);
   width: 38px;
   height: 38px;
@@ -191,7 +191,7 @@ body{
   padding: 12px;
   border-radius: 12px;
   border: 1px solid rgba(239,231,216,0.12);
-  background: rgba(255,255,255,0.03);
+  /* background: rgba(255,255,255,0.03); */
   color: var(--text);
   cursor:pointer;
   transition: transform .08s ease, border-color .12s ease, background .12s ease;
