@@ -104,12 +104,16 @@ function selectTool(id){
   els.toolDesc.textContent = tool.desc;
   els.toolFrame.src = tool.url;
 
+  document.body.classList.add("tool-active");
+
   localStorage.setItem("toolhub:lastToolId", id);
   els.openNewTabBtn.disabled = false;
-  els.openNewTabBtn.onclick = () => window.open(tool.url, "_blank", "noopener,noreferrer");
+  els.openNewTabBtn.onclick = () =>
+    window.open(tool.url, "_blank", "noopener,noreferrer");
 
   highlightActive();
 }
+
 
 els.toolSearch.addEventListener("input", (e) => renderToolList(e.target.value));
 
