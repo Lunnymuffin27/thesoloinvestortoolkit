@@ -1,12 +1,24 @@
 :root{
-  --bg:#f5f6f8;
-  --card:#ffffff;
-  --text:#14161a;
-  --muted:#5d6675;
-  --border:#e7e9ee;
-  --shadow: 0 10px 30px rgba(10, 20, 30, .08);
+  /* Backgrounds */
+  --bg: #f4f1ec;           /* parchment */
+  --card: #ffffff;        /* paper */
+  --panel: #1c1b18;       /* deep ink (drawer/header alt) */
+
+  /* Text */
+  --text: #1f1e1c;        /* near-black ink */
+  --muted: #6f6a5f;       /* warm gray */
+
+  /* Accents */
+  --accent: #9c8352;      /* antique gold */
+  --accent-soft: #e7dfcf; /* light parchment gold */
+
+  /* Borders & shadows */
+  --border: #ded8cc;
+  --shadow: 0 10px 30px rgba(30, 25, 15, .12);
+
   --radius: 14px;
 }
+
 
 *{ box-sizing:border-box; }
 html,body{ height:100%; }
@@ -26,7 +38,7 @@ body{
   align-items:center;
   gap: 14px;
   padding: 12px 14px;
-  background: #ffffff;
+  background: var(--card);
   border-bottom: 1px solid var(--border);
 }
 
@@ -54,7 +66,12 @@ body{
   cursor: pointer;
 }
 
-.brand-title{ font-weight: 700; line-height: 1.1; }
+.brand-title{ 
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 700;
+  line-height: 1.1; 
+}
+
 .brand-sub{ color: var(--muted); font-size: 12px; margin-top: 2px; }
 
 /* Drawer */
