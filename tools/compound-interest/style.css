@@ -48,6 +48,45 @@ body {
 /* Helps inside iframe so it’s not edge-to-edge */
 body { padding: 12px; }
 
+/* Dark top section (content header) */
+.contentHeader {
+  background:
+    radial-gradient(700px 420px at 18% 10%, rgba(199,162,90,0.10) 0%, transparent 55%),
+    linear-gradient(180deg, rgba(17,16,24,0.98) 0%, rgba(12,11,18,0.95) 100%);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 18px 18px 16px;
+  margin-bottom: 18px;
+  box-shadow: var(--shadow);
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  backdrop-filter: blur(2px);
+}
+
+.contentHeader h2 {
+  color: var(--text);
+}
+
+.contentHeader p {
+  color: var(--muted);
+}
+
+/* Chef's Kiss */
+.contentHeader h2::after {
+  content: "";
+  display: block;
+  width: 64px;
+  height: 2px;
+  margin-top: 8px;
+  background: linear-gradient(
+    90deg,
+    var(--accent),
+    rgba(199,162,90,0.2)
+  );
+  border-radius: 2px;
+}
+
 /* Layout */
 .dashboard {
   display: grid;
