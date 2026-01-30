@@ -181,10 +181,25 @@ p{ margin: 6px 0 0; color: var(--muted); font-size: 13px; }
 }
 .btn:disabled{ opacity: .55; cursor: not-allowed; }
 
+/* Let tool fill the page */
 .viewer{
-  height: min(70vh, 720px);
+  flex: 1;
+  min-height: 0;
   background: #fafbfc;
 }
+
+.container{
+  height: calc(100vh - 58px); /* subtract top bar height */
+  display: flex;
+}
+
+.card{
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+
 iframe{
   width: 100%;
   height: 100%;
