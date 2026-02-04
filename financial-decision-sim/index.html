@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Financial Decision Simulator</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <div class="logo">SI</div>
+        <div>
+          <div class="title">Financial Decision Simulator</div>
+          <div class="subtitle">Pick 2 cards per year. Survive. Compound.</div>
+        </div>
+      </div>
+
+      <div class="topbar-actions">
+        <button id="btnNewRun" class="btn ghost">New Run</button>
+        <button id="btnReset" class="btn ghost">Reset</button>
+      </div>
+    </header>
+
+    <main class="layout">
+      <!-- LEFT: Status + Chart -->
+      <section class="panel">
+        <div class="panel-header">
+          <div>
+            <div class="kicker">Run</div>
+            <div class="panel-title" id="runTitle">Seed: —</div>
+          </div>
+          <div class="badge" id="yearBadge">Year 1</div>
+        </div>
+
+        <div class="stats">
+          <div class="stat">
+            <div class="label">Net Worth</div>
+            <div class="value" id="nw">$0</div>
+          </div>
+          <div class="stat">
+            <div class="label">Cash</div>
+            <div class="value" id="cash">$0</div>
+          </div>
+          <div class="stat">
+            <div class="label">Invested</div>
+            <div class="value" id="inv">$0</div>
+          </div>
+          <div class="stat">
+            <div class="label">Debt</div>
+            <div class="value" id="debt">$0</div>
+          </div>
+          <div class="stat">
+            <div class="label">Income</div>
+            <div class="value" id="income">$0</div>
+          </div>
+          <div class="stat">
+            <div class="label">Expenses</div>
+            <div class="value" id="expenses">$0</div>
+          </div>
+
+          <div class="meter">
+            <div class="labelrow">
+              <span>Stress</span><span id="stressVal">0</span>
+            </div>
+            <div class="bar"><div id="stressBar" class="fill"></div></div>
+          </div>
+
+          <div class="meter">
+            <div class="labelrow">
+              <span>Burnout</span><span id="burnVal">0</span>
+            </div>
+            <div class="bar"><div id="burnBar" class="fill"></div></div>
+          </div>
+        </div>
+
+        <div class="chart-wrap">
+          <div class="chart-header">
+            <div class="kicker">Timeline</div>
+            <div class="panel-title">Net Worth Over Time</div>
+          </div>
+          <canvas id="nwChart" width="520" height="220"></canvas>
+        </div>
+
+        <div class="hint">
+          Tip: Stability lowers stress. Leverage grows faster… until it doesn’t.
+        </div>
+      </section>
+
+      <!-- RIGHT: Cards + Results -->
+      <section class="panel">
+        <div class="panel-header">
+          <div>
+            <div class="kicker">Your Hand</div>
+            <div class="panel-title">Choose <span class="accent">2</span> cards</div>
+          </div>
+          <div class="pill">
+            Selected: <span id="selectedCount">0</span>/2
+          </div>
+        </div>
+
+        <div id="hand" class="hand"></div>
+
+        <div class="controls">
+          <button id="btnEndYear" class="btn primary" disabled>End Year</button>
+          <button id="btnSkip" class="btn">Skip (Do Nothing)</button>
+        </div>
+
+        <div class="results">
+          <div class="results-header">
+            <div class="kicker">Year Results</div>
+            <div class="panel-title" id="resultsTitle">No year played yet</div>
+          </div>
+
+          <div class="result-card">
+            <div class="result-label">Event</div>
+            <div class="result-text" id="eventText">—</div>
+          </div>
+
+          <div class="log">
+            <div class="result-label">Log</div>
+            <div id="logList" class="log-list"></div>
+          </div>
+        </div>
+
+      </section>
+    </main>
+
+    <footer class="footer">
+      <span>Solo Investor Toolkit • Game MVP UI</span>
+    </footer>
+  </div>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
