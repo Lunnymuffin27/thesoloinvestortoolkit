@@ -30,11 +30,28 @@ const ui = {
   logList: $("logList"),
 
   chart: $("nwChart"),
+
+  btnRules: $("btnRules"),
+  rulesBody: $("rulesBody"),
+  btnRulesDismiss: $("btnRulesDismiss"),
 };
 
 let game;
 let currentHand = [];
 let selected = new Set();
+
+const RULES_SEEN_KEY = "fds_rules_seen_v1";
+
+function openRules(open) {
+  const isOpen = !!open;
+  ui.btnRules.setAttribute("aria-expanded", String(isOpen));
+  ui.rulesBody.hidden = !isOpen;
+}
+
+function markRulesSeen() {
+  localStorage.setItem(RULES_SEEN_KEY, "1");
+}
+
 
 function money(n){
   const s = Math.round(n).toLocaleString();
@@ -167,10 +184,19 @@ function playYear(chosenIds){
     ui.logList.appendChild(row);
   });
 
+  // After the first completed year, consider the rules “seen”
+  if (snap.year === 1) markRulesSeen();
+
   // deal next year
   currentHand = game.getHand();
   selected.clear();
   render();
+
+  // to remove instructions after first hand
+  const hasSeen = localStorage.getItem(RULES_SEEN_KEY) === "1";
+  // Auto-open only on Year 1 and only if not dismissed before
+  openRules(!hasSeen);
+
 
   // Ending checks (UI message only)
   const s = game.state;
@@ -257,6 +283,18 @@ ui.btnNewRun.addEventListener("click", () => {
 ui.btnReset.addEventListener("click", () => {
   startNewRun(game?.seed || "RUN-001");
 });
+
+// ===== Rules Card Wiring =====
+ui.btnRules.addEventListener("click", () => {
+  const expanded = ui.btnRules.getAttribute("aria-expanded") === "true";
+  openRules(!expanded);
+});
+
+ui.btnRulesDismiss.addEventListener("click", () => {
+  markRulesSeen();
+  openRules(false);
+});
+
 
 // boot
 startNewRun("RUN-001");
