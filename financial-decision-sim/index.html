@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Financial Decision Simulator</title>
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="/styles.css" />
 </head>
 <body>
   <div class="app">
@@ -100,6 +100,45 @@
           </div>
         </div>
 
+        <!-- Rules Card (collapsible) -->
+        <div class="rules">
+          <button id="btnRules" class="rules-toggle" aria-expanded="false">
+            <span class="rules-icon">ⓘ</span>
+            <span class="rules-title">Rules</span>
+            <span class="rules-chev" aria-hidden="true">▾</span>
+          </button>
+
+          <div id="rulesBody" class="rules-body" hidden>
+            <div class="rules-grid">
+              <div class="rules-item">
+                <div class="rules-h">Each round = 1 year</div>
+                <div class="rules-t">Pick 2 cards → event hits → results compound.</div>
+              </div>
+
+              <div class="rules-item">
+                <div class="rules-h">Pick 2 cards</div>
+                <div class="rules-t">6–8 cards appear. Tradeoffs matter.</div>
+              </div>
+
+              <div class="rules-item">
+                <div class="rules-h">Watch these</div>
+                <div class="rules-t"><b>Cash</b>, <b>Debt</b>, <b>Stress</b>, <b>Burnout</b>, <b>Net Worth</b>.</div>
+              </div>
+
+              <div class="rules-item">
+                <div class="rules-h">Endings</div>
+                <div class="rules-t">Run ends if Stress/Burnout hits <b>100</b> or Net Worth collapses.</div>
+              </div>
+
+              <div class="rules-quote">Tip: Boring years are where compounding does its work.</div>
+            </div>
+
+            <button id="btnRulesDismiss" class="rules-dismiss" type="button">
+              Got it — don’t show again
+            </button>
+          </div>
+        </div>
+
         <div id="hand" class="hand"></div>
 
         <div class="controls">
@@ -132,6 +171,6 @@
     </footer>
   </div>
 
-  <script type="module" src="./app.js"></script>
+  <script type="module" src="/app.js"></script>
 </body>
 </html>
