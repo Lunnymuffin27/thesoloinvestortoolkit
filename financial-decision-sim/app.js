@@ -1,0 +1,262 @@
+import { createGame, netWorth } from "sim.js";
+
+const $ = (id) => document.getElementById(id);
+
+const ui = {
+  runTitle: $("runTitle"),
+  yearBadge: $("yearBadge"),
+
+  nw: $("nw"),
+  cash: $("cash"),
+  inv: $("inv"),
+  debt: $("debt"),
+  income: $("income"),
+  expenses: $("expenses"),
+
+  stressVal: $("stressVal"),
+  burnVal: $("burnVal"),
+  stressBar: $("stressBar"),
+  burnBar: $("burnBar"),
+
+  hand: $("hand"),
+  selectedCount: $("selectedCount"),
+  btnEndYear: $("btnEndYear"),
+  btnSkip: $("btnSkip"),
+  btnNewRun: $("btnNewRun"),
+  btnReset: $("btnReset"),
+
+  resultsTitle: $("resultsTitle"),
+  eventText: $("eventText"),
+  logList: $("logList"),
+
+  chart: $("nwChart"),
+};
+
+let game;
+let currentHand = [];
+let selected = new Set();
+
+function money(n){
+  const s = Math.round(n).toLocaleString();
+  return `$${s}`;
+}
+
+function seedFromPrompt(){
+  const seed = prompt("Enter a seed (any text). Same seed = repeatable run:", "RUN-001");
+  return seed && seed.trim() ? seed.trim() : `RUN-${Math.floor(Math.random()*9999)}`;
+}
+
+function startNewRun(seed){
+  game = createGame({
+    seed,
+    years: 15,
+    initialState: { cash: 9000, debt: 15000, income: 54000, expenses: 38000 }
+  });
+
+  selected.clear();
+  ui.eventText.textContent = "—";
+  ui.resultsTitle.textContent = "No year played yet";
+  ui.logList.innerHTML = "";
+
+  currentHand = game.getHand();
+  render();
+}
+
+function render(){
+  const s = game.state;
+  ui.runTitle.textContent = `Seed: ${game.seed}`;
+  ui.yearBadge.textContent = `Year ${s.year}`;
+
+  ui.nw.textContent = money(netWorth(s));
+  ui.cash.textContent = money(s.cash);
+  ui.inv.textContent = money(s.invested);
+  ui.debt.textContent = money(s.debt);
+  ui.income.textContent = money(s.income);
+  ui.expenses.textContent = money(s.expenses);
+
+  ui.stressVal.textContent = `${Math.round(s.stress)}`;
+  ui.burnVal.textContent = `${Math.round(s.burnout)}`;
+
+  ui.stressBar.style.width = `${Math.round(s.stress)}%`;
+  ui.burnBar.style.width = `${Math.round(s.burnout)}%`;
+
+  ui.selectedCount.textContent = `${selected.size}`;
+  ui.btnEndYear.disabled = selected.size !== 2;
+
+  renderHand();
+  renderChart();
+}
+
+function renderHand(){
+  ui.hand.innerHTML = "";
+
+  currentHand.forEach(card => {
+    const div = document.createElement("div");
+    div.className = "card" + (selected.has(card.id) ? " selected" : "");
+    div.dataset.id = card.id;
+
+    const rarity = document.createElement("div");
+    rarity.className = "rarity";
+    rarity.textContent = card.rarity.toUpperCase();
+
+    const name = document.createElement("div");
+    name.className = "name";
+    name.textContent = card.name;
+
+    const desc = document.createElement("div");
+    desc.className = "desc";
+    desc.textContent = card.desc || card.tags?.join(", ") || "—";
+
+    const meta = document.createElement("div");
+    meta.className = "meta";
+
+    (card.tags || []).slice(0, 4).forEach(t => {
+      const tag = document.createElement("span");
+      tag.className = "tag";
+      tag.textContent = t;
+      meta.appendChild(tag);
+    });
+
+    div.appendChild(rarity);
+    div.appendChild(name);
+    div.appendChild(desc);
+    div.appendChild(meta);
+
+    div.addEventListener("click", () => toggleSelect(card.id));
+    ui.hand.appendChild(div);
+  });
+}
+
+function toggleSelect(id){
+  if (selected.has(id)) {
+    selected.delete(id);
+  } else {
+    if (selected.size >= 2) {
+      // swap behavior: remove oldest selection
+      const first = selected.values().next().value;
+      selected.delete(first);
+    }
+    selected.add(id);
+  }
+  renderHand();
+  ui.selectedCount.textContent = `${selected.size}`;
+  ui.btnEndYear.disabled = selected.size !== 2;
+}
+
+function playYear(chosenIds){
+  const snap = game.playYear(chosenIds);
+
+  ui.resultsTitle.textContent = `Year ${snap.year} completed`;
+  ui.eventText.textContent = snap.event ? `${snap.event.name}: ${snap.event.text}` : "No event this year.";
+
+  ui.logList.innerHTML = "";
+  snap.log.forEach(item => {
+    const row = document.createElement("div");
+    row.className = "log-item";
+
+    const t = document.createElement("div");
+    t.className = "log-title";
+    t.textContent = item.title;
+
+    const tx = document.createElement("div");
+    tx.className = "log-text";
+    tx.textContent = item.text;
+
+    row.appendChild(t);
+    row.appendChild(tx);
+    ui.logList.appendChild(row);
+  });
+
+  // deal next year
+  currentHand = game.getHand();
+  selected.clear();
+  render();
+
+  // Ending checks (UI message only)
+  const s = game.state;
+  if (snap.netWorth < -50000) {
+    alert("Ending: Bankruptcy spiral. Try a more stable run.");
+  }
+  if (s.stress >= 100 || s.burnout >= 100) {
+    alert("Ending: Burnout collapse. Stability is a strategy.");
+  }
+}
+
+function renderChart(){
+  const ctx = ui.chart.getContext("2d");
+  const w = ui.chart.width;
+  const h = ui.chart.height;
+
+  ctx.clearRect(0,0,w,h);
+
+  const history = game.state.history;
+  const points = history.map(x => x.netWorth);
+  const currentNW = netWorth(game.state);
+  const series = points.concat([currentNW]);
+
+  if (series.length < 2) {
+    // baseline line
+    ctx.beginPath();
+    ctx.moveTo(20, h/2);
+    ctx.lineTo(w-20, h/2);
+    ctx.stroke();
+    return;
+  }
+
+  const min = Math.min(...series);
+  const max = Math.max(...series);
+  const pad = 20;
+
+  const xStep = (w - pad*2) / (series.length - 1);
+  const yScale = (h - pad*2) / (max - min || 1);
+
+  // axes baseline
+  ctx.globalAlpha = 0.25;
+  ctx.beginPath();
+  ctx.moveTo(pad, h - pad);
+  ctx.lineTo(w - pad, h - pad);
+  ctx.stroke();
+  ctx.globalAlpha = 1;
+
+  // line
+  ctx.beginPath();
+  series.forEach((v, i) => {
+    const x = pad + i * xStep;
+    const y = (h - pad) - (v - min) * yScale;
+    if (i === 0) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
+  });
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  // last point dot
+  const lastX = pad + (series.length - 1) * xStep;
+  const lastY = (h - pad) - (series[series.length - 1] - min) * yScale;
+  ctx.beginPath();
+  ctx.arc(lastX, lastY, 4, 0, Math.PI * 2);
+  ctx.fill();
+}
+
+ui.btnEndYear.addEventListener("click", () => {
+  if (selected.size !== 2) return;
+  playYear(Array.from(selected));
+});
+
+ui.btnSkip.addEventListener("click", () => {
+  // force "do_nothing" + another best card if available
+  const ids = currentHand.map(c => c.id);
+  const first = "do_nothing";
+  const second = ids.find(id => id !== "do_nothing") || "do_nothing";
+  playYear([first, second]);
+});
+
+ui.btnNewRun.addEventListener("click", () => {
+  startNewRun(seedFromPrompt());
+});
+
+ui.btnReset.addEventListener("click", () => {
+  startNewRun(game?.seed || "RUN-001");
+});
+
+// boot
+startNewRun("RUN-001");
