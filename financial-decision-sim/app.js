@@ -1,4 +1,4 @@
-import { createGame, netWorth } from "sim.js";
+import { createGame, netWorth } from "./sim.js";
 
 const $ = (id) => document.getElementById(id);
 
