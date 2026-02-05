@@ -176,6 +176,9 @@ const CARDS = [
       s.stress = clamp(s.stress - 2, 0, 100);
       return { ok: true, text: `Invested $${amount.toFixed(0)} into broad markets.` };
     },
+    // Index Investing
+    desc: "Convert cash into long-term compounding.",
+    ui: { icon: "📈", color: "invest" },
   },
   {
     id: "pay_down_debt",
@@ -193,6 +196,9 @@ const CARDS = [
       s.discipline = clamp(s.discipline + 0.01, 0, 1);
       return { ok: true, text: `Paid $${amount.toFixed(0)} toward debt.` };
     },
+    // Pay Down Debt
+    desc: "Lower risk by shrinking your debt burden.",
+    ui: { icon: "🧾", color: "debt" },
   },
   {
     id: "build_emergency_fund",
@@ -207,6 +213,9 @@ const CARDS = [
       s.flags.emergencyFundBuff = clamp(getFlag(s, "emergencyFundBuff", 0) + 1, 0, 3);
       return { ok: true, text: "Liquidity prioritized. Shocks hit softer." };
     },
+    // Build Emergency Fund
+    desc: "Reduce shock damage from bad years.",
+    ui: { icon: "🛡️", color: "defense" },
   },
   {
     id: "reduce_lifestyle",
@@ -222,6 +231,9 @@ const CARDS = [
       s.discipline = clamp(s.discipline + 0.02, 0, 1);
       return { ok: true, text: `Expenses -$${cut.toFixed(0)}/yr.` };
     },
+    // Reduce Lifestyle
+    desc: "Cut expenses to regain control.",
+    ui: { icon: "🧊", color: "stability" },
   },
   {
     id: "negotiate_bills",
@@ -237,6 +249,9 @@ const CARDS = [
       s.stress = clamp(s.stress - 2, 0, 100);
       return { ok: true, text: `Bills reduced. Expenses -$${cut.toFixed(0)}/yr.` };
     },
+    // Negotiate Bills
+    desc: "Lower fixed costs with quick wins.",
+    ui: { icon: "☎️", color: "stability" },
   },
   {
     id: "skill_sprint",
@@ -258,6 +273,9 @@ const CARDS = [
       }
       return { ok: true, text: "Upskilled hard. Momentum increased." };
     },
+    // Skill Sprint
+    desc: "Trade stress for future career power.",
+    ui: { icon: "🎓", color: "career" },
   },
   {
     id: "side_hustle",
@@ -282,6 +300,9 @@ const CARDS = [
 
       return { ok: true, text: `Hustle leveled up. Income +$${bump}/yr.` };
     },
+    // Side Hustle
+    desc: "Boost income, but burnout rises.",
+    ui: { icon: "🛠️", color: "hustle" },
   },
   {
     id: "automate_savings",
@@ -296,6 +317,9 @@ const CARDS = [
       s.stress = clamp(s.stress - 1, 0, 100);
       return { ok: true, text: "Saving system installed. Auto-invest will trigger yearly." };
     },
+    // Automate Savings
+    desc: "A system that invests for you every year.",
+    ui: { icon: "⚙️", color: "invest" },
   },
   {
     id: "overtime_push",
@@ -312,6 +336,9 @@ const CARDS = [
       s.burnout = clamp(s.burnout + 9, 0, 100);
       return { ok: true, text: `Overtime paid. Cash +$${bonus}.` };
     },
+    // Overtime Push
+    desc: "Short-term cash. Long-term fatigue.",
+    ui: { icon: "⏱️", color: "hustle" },
   },
   {
     id: "do_nothing",
@@ -325,6 +352,9 @@ const CARDS = [
       s.burnout = clamp(s.burnout - 5, 0, 100);
       return { ok: true, text: "You recovered. Stress eased." };
     },
+    // Do Nothing
+    desc: "Recover. Reduce stress and burnout.",
+    ui: { icon: "🧘", color: "recovery" },
   },
 
   // ===== UNCOMMON (6) =====
@@ -353,6 +383,9 @@ const CARDS = [
         return { ok: true, text: "The move backfired. Income destabilized this year." };
       }
     },
+    // Career Move
+    desc: "High upside… but volatility.",
+    ui: { icon: "🧗", color: "career" },
   },
   {
     id: "debt_refi",
@@ -375,6 +408,9 @@ const CARDS = [
       s.stress = clamp(s.stress - 6, 0, 100);
       return { ok: true, text: `Refinanced debt. APR reduced (fee $${fee}).` };
     },
+    // Debt Refi
+    desc: "Reduce APR and stabilize the run.",
+    ui: { icon: "🔁", color: "debt" },
   },
   {
     id: "start_business",
@@ -399,6 +435,9 @@ const CARDS = [
 
       return { ok: true, text: `Business push. Income change: ${bump >= 0 ? "+" : ""}$${bump}/yr.` };
     },
+    // Start Business
+    desc: "Scale income with big risk + burnout.",
+    ui: { icon: "🚀", color: "hustle" },
   },
   {
     id: "buy_rental",
@@ -426,6 +465,9 @@ const CARDS = [
 
       return { ok: true, text: `Rental acquired. Income +$${cashflow}/yr, debt +$${addedDebt}.` };
     },
+    // Buy Rental
+    desc: "Leverage ownership. Repairs will come.",
+    ui: { icon: "🏠", color: "ownership" },
   },
   {
     id: "house_hack",
@@ -451,6 +493,9 @@ const CARDS = [
 
       return { ok: true, text: `House hack. Expenses -$${expenseDrop}/yr, debt +$${addedDebt}.` };
     },
+    // House Hack
+    desc: "Lower expenses using ownership strategy.",
+    ui: { icon: "🧱", color: "ownership" },
   },
   {
     id: "insurance_upgrade",
@@ -469,6 +514,9 @@ const CARDS = [
 
       return { ok: true, text: `Coverage upgraded. Expenses +$${added}/yr, medical hits reduced.` };
     },
+    // Insurance Upgrade
+    desc: "Medical events hit softer (but cost more).",
+    ui: { icon: "🩺", color: "defense" },
   },
 
   // ===== RARE (2) =====
@@ -491,6 +539,9 @@ const CARDS = [
 
       return { ok: true, text: `You sold in fear. Cash +$${liquidated}. Regret drag increased.` };
     },
+    // Panic Sell
+    desc: "Escape now. Pay later (regret drag).",
+    ui: { icon: "😰", color: "wild" },
   },
   {
     id: "windfall_opportunity",
@@ -507,6 +558,9 @@ const CARDS = [
       s.stress = clamp(s.stress - 4, 0, 100);
       return { ok: true, text: `Opportunity hit. Cash +$${bonus}.` };
     },
+    // Windfall Opportunity
+    desc: "A rare boost. Discipline increases payoff.",
+    ui: { icon: "🎁", color: "wild" },
   },
 ];
 
@@ -779,7 +833,10 @@ const EVENTS = [
   {
     id: "layoff",
     name: "Layoff",
-    weight: (s) => 4 + (s.stress > 70 ? 5 : 0) - getFlag(s, "careerMomentum", 0) * 0.5,
+    weight: (s) => {
+      if ((s.income || 0) < 1000) return 0; // starter mode / no-income mode
+      return 4 + (s.stress > 70 ? 5 : 0) - getFlag(s, "careerMomentum", 0) * 0.5;
+    },
     apply: (s) => {
       s.flags.laidOff = true;
       s.stress = clamp(s.stress + 14, 0, 100);
