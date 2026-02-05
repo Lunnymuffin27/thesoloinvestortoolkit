@@ -3,6 +3,8 @@ import { createGame, netWorth } from "./sim.js";
 const $ = (id) => document.getElementById(id);
 
 const ui = {
+  modeSelect: $("modeSelect"),
+
   runTitle: $("runTitle"),
   yearBadge: $("yearBadge"),
 
@@ -58,16 +60,50 @@ function money(n){
   return `$${s}`;
 }
 
+const MODE_KEY = "fds_mode_v1";
+
+function initialStateForMode(mode){
+  if (mode === "starter_10k")  return { cash: 10000, invested: 0, debt: 0, income: 0, expenses: 0, stress: 15, burnout: 0 };
+  if (mode === "starter_100k") return { cash: 100000, invested: 0, debt: 0, income: 0, expenses: 0, stress: 15, burnout: 0 };
+  if (mode === "starter_1m")   return { cash: 1000000, invested: 0, debt: 0, income: 0, expenses: 0, stress: 15, burnout: 0 };
+
+  // life mode default
+  return { cash: 9000, debt: 15000, income: 54000, expenses: 38000, stress: 25, burnout: 0 };
+}
+
+function getRecommendations(state, hand){
+  const ids = new Set(hand.map(c => c.id));
+  const rec = [];
+
+  // 1) Safety first
+  if (state.cash < 3000 && ids.has("build_emergency_fund")) rec.push("build_emergency_fund");
+  if (state.stress > 70 && ids.has("do_nothing")) rec.push("do_nothing");
+
+  // 2) Debt pressure
+  if (state.debt > 20000 && ids.has("pay_down_debt")) rec.push("pay_down_debt");
+  if (state.debt > 12000 && state.discipline >= 0.55 && ids.has("debt_refi")) rec.push("debt_refi");
+
+  // 3) Growth (only if not dying)
+  if (rec.length < 2 && state.stress < 70 && ids.has("automate_savings")) rec.push("automate_savings");
+  if (rec.length < 2 && state.cash > 7000 && ids.has("index_investing")) rec.push("index_investing");
+
+  // ensure unique + max 2
+  return Array.from(new Set(rec)).slice(0, 2);
+}
+
 function seedFromPrompt(){
   const seed = prompt("Enter a seed (any text). Same seed = repeatable run:", "RUN-001");
   return seed && seed.trim() ? seed.trim() : `RUN-${Math.floor(Math.random()*9999)}`;
 }
 
 function startNewRun(seed){
+  const mode = ui.modeSelect.value || "life";
+  localStorage.setItem(MODE_KEY, mode);
+
   game = createGame({
     seed,
     years: 15,
-    initialState: { cash: 9000, debt: 15000, income: 54000, expenses: 38000 }
+    initialState: initialStateForMode(mode)
   });
 
   selected.clear();
@@ -77,7 +113,11 @@ function startNewRun(seed){
 
   currentHand = game.getHand();
   render();
+
+  const hasSeen = localStorage.getItem("fds_rules_seen_v1") === "1";
+  openRules(!hasSeen);
 }
+
 
 function render(){
   const s = game.state;
@@ -107,14 +147,38 @@ function render(){
 function renderHand(){
   ui.hand.innerHTML = "";
 
+  const s = game.state;
+  const recommended = new Set(getRecommendations(s, currentHand));
+
   currentHand.forEach(card => {
     const div = document.createElement("div");
-    div.className = "card" + (selected.has(card.id) ? " selected" : "");
+
+    const color = card.ui?.color || "";
+    div.className = `card ${color}` + (selected.has(card.id) ? " selected" : "");
     div.dataset.id = card.id;
 
+    // Recommended ribbon
+    if (recommended.has(card.id)) {
+      const rib = document.createElement("div");
+      rib.className = "ribbon";
+      rib.textContent = "Recommended";
+      div.appendChild(rib);
+    }
+
+    // rarity badge
     const rarity = document.createElement("div");
     rarity.className = "rarity";
-    rarity.textContent = card.rarity.toUpperCase();
+    rarity.textContent = (card.rarity || "").toUpperCase();
+
+    const head = document.createElement("div");
+    head.className = "card-head";
+
+    const icon = document.createElement("div");
+    icon.className = "card-icon";
+    icon.textContent = card.ui?.icon || "🃏";
+
+    const body = document.createElement("div");
+    body.className = "card-body";
 
     const name = document.createElement("div");
     name.className = "name";
@@ -122,12 +186,17 @@ function renderHand(){
 
     const desc = document.createElement("div");
     desc.className = "desc";
-    desc.textContent = card.desc || card.tags?.join(", ") || "—";
+    desc.textContent = card.desc || "—";
+
+    body.appendChild(name);
+    body.appendChild(desc);
+
+    head.appendChild(icon);
+    head.appendChild(body);
 
     const meta = document.createElement("div");
     meta.className = "meta";
-
-    (card.tags || []).slice(0, 4).forEach(t => {
+    (card.tags || []).slice(0, 3).forEach(t => {
       const tag = document.createElement("span");
       tag.className = "tag";
       tag.textContent = t;
@@ -135,8 +204,7 @@ function renderHand(){
     });
 
     div.appendChild(rarity);
-    div.appendChild(name);
-    div.appendChild(desc);
+    div.appendChild(head);
     div.appendChild(meta);
 
     div.addEventListener("click", () => toggleSelect(card.id));
@@ -295,6 +363,14 @@ ui.btnRulesDismiss.addEventListener("click", () => {
   openRules(false);
 });
 
+// Load saved mode
+const savedMode = localStorage.getItem(MODE_KEY);
+if (savedMode) ui.modeSelect.value = savedMode;
+
+// Changing mode starts a new run (same seed)
+ui.modeSelect.addEventListener("change", () => {
+  startNewRun(game?.seed || "RUN-001");
+});
 
 // boot
 startNewRun("RUN-001");
