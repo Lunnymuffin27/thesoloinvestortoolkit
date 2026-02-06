@@ -213,18 +213,27 @@ canvas{ width:100%; height:auto; display:block; }
   margin-top:10px;
   display:flex; gap:8px; flex-wrap:wrap;
 }
+
 .ribbon{
   position:absolute;
   top:10px;
-  left:10px;
-  font-size:11px;
+  right:10px;          /* <-- move to right */
+  left:auto;           /* <-- ensure not left */
+  font-size:10.5px;
   padding:4px 8px;
   border-radius:999px;
   border:1px solid rgba(155,122,60,.35);
-  background: rgba(155,122,60,.12);
+  background: rgba(255,255,255,.88); /* <-- more readable */
+  backdrop-filter: blur(6px);
   font-weight:900;
   color:#3a2d18;
+  z-index: 2;
+  pointer-events:none;
 }
+
+.card{ padding-top: 14px; }  /* gives breathing room */
+.rarity{ right:10px; top:40px; } /* optional: prevent stacking */
+
 
 /* Car colors */
 .card.invest::before{ background: radial-gradient(520px 180px at 20% 0%, rgba(60,130,155,.65), transparent 55%); }
