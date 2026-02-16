@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Portfolio Strategy Simulator | Solo Investor</title>
+
+  <link rel="stylesheet" href="/styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="/app.js" defer></script>
+</head>
+
+<body>
+  <div class="container">
+
+    <!-- LEFT PANEL -->
+    <div class="panel inputs">
+
+      <div class="header">
+        <div>
+          <h2>Portfolio Strategy Simulator</h2>
+          <p class="subtle">Build a strategy. Stress-test the outcome.</p>
+        </div>
+        <span class="badge" id="strategyBadge">Balanced Builder</span>
+      </div>
+
+      <div class="grid-2">
+        <div>
+          <label>Starting Balance</label>
+          <div class="field">
+            <span class="prefix">$</span>
+            <input type="number" id="startingBalance" value="10000" min="0" />
+          </div>
+        </div>
+
+        <div>
+          <label>Monthly Contribution</label>
+          <div class="field">
+            <span class="prefix">$</span>
+            <input type="number" id="monthlyContribution" value="500" min="0" />
+          </div>
+        </div>
+      </div>
+
+      <label>Time Horizon</label>
+      <div class="range-row">
+        <input type="range" id="yearsRange" min="1" max="50" value="30" />
+        <div class="pill"><span id="yearsValue">30</span> years</div>
+      </div>
+      <input type="number" id="years" value="30" min="1" max="50" class="hidden" />
+
+      <div class="section">
+        <div class="section-title">
+          <h3>Allocation</h3>
+          <div class="allocation-total">
+            Total: <span id="allocTotal">100</span>%
+          </div>
+        </div>
+
+        <div class="alloc-bar">
+          <div class="alloc-fill stocks" id="barStocks" style="width:70%"></div>
+          <div class="alloc-fill bonds" id="barBonds" style="width:20%"></div>
+          <div class="alloc-fill cash" id="barCash" style="width:10%"></div>
+        </div>
+
+        <div id="allocationError" class="error"></div>
+
+        <div class="cards">
+
+          <div class="asset-card">
+            <div class="asset-head">
+              <div class="asset-left">
+                <div class="icon">📈</div>
+                <div>
+                  <div class="asset-name">Stocks</div>
+                  <div class="asset-note">Growth & volatility</div>
+                </div>
+              </div>
+              <div class="asset-right"><span id="stocksVal">70</span>%</div>
+            </div>
+            <input type="range" id="stocksRange" min="0" max="100" value="70" />
+            <input type="number" id="stocks" value="70" min="0" max="100" class="hidden" />
+          </div>
+
+          <div class="asset-card">
+            <div class="asset-head">
+              <div class="asset-left">
+                <div class="icon">🧾</div>
+                <div>
+                  <div class="asset-name">Bonds</div>
+                  <div class="asset-note">Stability buffer</div>
+                </div>
+              </div>
+              <div class="asset-right"><span id="bondsVal">20</span>%</div>
+            </div>
+            <input type="range" id="bondsRange" min="0" max="100" value="20" />
+            <input type="number" id="bonds" value="20" min="0" max="100" class="hidden" />
+          </div>
+
+          <div class="asset-card">
+            <div class="asset-head">
+              <div class="asset-left">
+                <div class="icon">🏦</div>
+                <div>
+                  <div class="asset-name">Cash</div>
+                  <div class="asset-note">Safety & flexibility</div>
+                </div>
+              </div>
+              <div class="asset-right"><span id="cashVal">10</span>%</div>
+            </div>
+            <input type="range" id="cashRange" min="0" max="100" value="10" />
+            <input type="number" id="cash" value="10" min="0" max="100" class="hidden" />
+          </div>
+
+        </div>
+
+        <div class="presets">
+          <button class="chip" data-preset="aggressive">Aggressive</button>
+          <button class="chip" data-preset="balanced">Balanced</button>
+          <button class="chip" data-preset="conservative">Conservative</button>
+        </div>
+
+        <div class="risk">
+          <div class="risk-top">
+            <span>Risk Meter</span>
+            <span class="pill" id="riskLabel">Medium</span>
+          </div>
+          <div class="risk-track">
+            <div class="risk-fill" id="riskFill" style="width:55%"></div>
+          </div>
+        </div>
+
+        <button id="runSimulation" class="primary">Run Simulation</button>
+
+      </div>
+
+    </div>
+
+    <!-- RIGHT PANEL -->
+    <div class="panel results">
+
+      <div class="compare-bar">
+        <div class="compare-left">
+          <h3 class="compare-title">Compare Runs</h3>
+          <p class="compare-sub">Save up to 3 strategies and overlay results.</p>
+        </div>
+      
+        <div class="compare-actions">
+          <button id="saveRun" class="chip">Save Run</button>
+          <button id="clearRuns" class="chip">Clear</button>
+        </div>
+      </div>
+      
+      <div id="runList" class="run-list"></div>
+
+      <div class="compare-summary" id="compareSummaryWrap">
+        <div class="compare-summary-head">
+          <h3 class="compare-title">Compare Summary</h3>
+          <p class="compare-sub">Saved runs only (up to 3).</p>
+        </div>
+      
+        <div class="table-wrap">
+          <table class="summary-table" id="compareSummaryTable">
+            <thead>
+              <tr>
+                <th>Run</th>
+                <th>Alloc</th>
+                <th>Years</th>
+                <th>Final</th>
+                <th>Contrib</th>
+                <th>Gains</th>
+                <th>Best Yr</th>
+                <th>Worst Yr</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+
+      <canvas id="portfolioChart"></canvas>
+
+      <div class="summary">
+        <p><strong>Final Value:</strong> <span id="finalValue">-</span></p>
+        <p><strong>Total Contributions:</strong> <span id="totalContributions">-</span></p>
+        <p><strong>Total Gains:</strong> <span id="totalGains">-</span></p>
+        <p><strong>Best Year:</strong> <span id="bestYear">-</span></p>
+        <p><strong>Worst Year:</strong> <span id="worstYear">-</span></p>
+        <p><strong>Strategy:</strong> <span id="strategyLabel">-</span></p>
+      </div>
+
+    </div>
+
+  </div>
+</body>
+</html>
