@@ -7,7 +7,7 @@ export function readConfigFromUI(baseConfig) {
   const monthlyContribution = parseFloat(el("monthlyContribution")?.value ?? baseConfig.monthlyContribution);
   const horizonYears = parseInt(el("years")?.value ?? baseConfig.horizonYears, 10);
 
-  // Your UI stores allocation as % integers in hidden inputs
+  // Allocation % integers from hidden inputs
   const sPct = parseInt(el("stocks")?.value ?? 70, 10);
   const bPct = parseInt(el("bonds")?.value ?? 20, 10);
   const cPct = parseInt(el("cash")?.value ?? 10, 10);
@@ -18,10 +18,13 @@ export function readConfigFromUI(baseConfig) {
     cash: cPct / 100
   });
 
-  // Optional controls (if you add later)
-  const mcEnabled = baseConfig.monteCarlo.enabled;
-  const mcRuns = baseConfig.monteCarlo.runs;
-  const mcSeed = baseConfig.monteCarlo.seed;
+  // Monte Carlo controls
+  const mcEnabled = !!el("mcEnabled")?.checked;
+  const mcRuns = parseInt(el("mcRuns")?.value ?? baseConfig.monteCarlo.runs, 10);
+  const mcSeed = parseInt(el("mcSeed")?.value ?? baseConfig.monteCarlo.seed, 10);
+
+  // Resolution
+  const timestep = el("timestep")?.value ?? baseConfig.timestep;
 
   return {
     ...baseConfig,
@@ -29,7 +32,13 @@ export function readConfigFromUI(baseConfig) {
     monthlyContribution,
     horizonYears,
     allocation,
-    monteCarlo: { ...baseConfig.monteCarlo, enabled: mcEnabled, runs: mcRuns, seed: mcSeed }
+    timestep,
+    monteCarlo: {
+      ...baseConfig.monteCarlo,
+      enabled: mcEnabled,
+      runs: mcRuns,
+      seed: mcSeed
+    }
   };
 }
 
