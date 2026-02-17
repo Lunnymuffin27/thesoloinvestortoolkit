@@ -50,6 +50,29 @@ function run() {
 // Hooks
 onRunClicked(run);
 
+// --- Monte Carlo UI wiring (labels + slider value) ---
+const mcEnabledEl = document.getElementById("mcEnabled");
+const mcRunsEl = document.getElementById("mcRuns");
+const mcRunsValueEl = document.getElementById("mcRunsValue");
+const mcRunsRowEl = document.getElementById("mcRunsRow");
+const modeLabelEl = document.getElementById("modeLabel");
+
+function syncMcUi() {
+  const enabled = !!mcEnabledEl?.checked;
+  if (mcRunsRowEl) mcRunsRowEl.style.display = enabled ? "flex" : "none";
+  if (modeLabelEl) modeLabelEl.textContent = enabled ? "Monte Carlo" : "Single Path";
+}
+
+if (mcRunsEl && mcRunsValueEl) {
+  mcRunsValueEl.textContent = mcRunsEl.value;
+  mcRunsEl.addEventListener("input", () => {
+    mcRunsValueEl.textContent = mcRunsEl.value;
+  });
+}
+
+mcEnabledEl?.addEventListener("change", syncMcUi);
+syncMcUi();
+
 // These are placeholders so your compare UI buttons still do something.
 // Later we’ll upgrade compare to save bands/metrics and overlay properly.
 onSaveRun(() => {
