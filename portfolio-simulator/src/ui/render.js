@@ -12,6 +12,9 @@ export function renderSummary(metrics) {
   el("bestYear").textContent = formatPct(metrics.bestYear);
   el("worstYear").textContent = formatPct(metrics.worstYear);
 
+  el("maxDrawdown").textContent = formatPct(metrics.maxDrawdown);
+  el("volatility").textContent = formatPct(metrics.volatility);
+
   // optional: add these fields to UI later if you want
   // el("maxDrawdown").textContent = formatPct(metrics.maxDrawdown);
   // el("volatility").textContent = formatPct(metrics.volatility);
